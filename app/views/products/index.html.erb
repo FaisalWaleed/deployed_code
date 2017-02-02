@@ -1,0 +1,20 @@
+<div class='list-group'>
+    <% @products.each do |product| %>
+        <div class="list-group-item">
+            <div class="pull-left">
+                <span class="text-muted">Name:</span> <%= link_to product.name, product %>
+            </div>
+            <div class="pull-right">
+                <span class="text-muted">Completed Sessions:</span><span class="text-success"><%= product.session_count %>/<%= product.session_rate %></span> <span class="text-muted">Burnt proxies:</span> <span class="text-<%= product.burnt_count == 0 ? "info" : "danger" %>"><%= product.burnt_count %></span> <span class="text-muted">Average completion page:</span> <span class="text-info"><%= product.average_page %></span>
+            </div>
+            <div class="clearfix"></div>
+        </div>
+    <% end %>
+</div>
+
+<div>
+    <%= paginate @products, remote: true, window: 2 %>
+    <%=  page_entries_info @products %>
+</div>
+
+<%= link_to "New Product", [:new, :product] %>

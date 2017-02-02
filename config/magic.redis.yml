@@ -1,0 +1,6 @@
+
+---
+production:
+  host: 23.253.149.215
+  port: 6379
+  password: 597EWRKio1OeBknr

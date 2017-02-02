@@ -1,0 +1,21 @@
+<h1><%= @product.name %></h1>
+
+<dl class='well'>
+    <dt>Target URL</dt>
+    <dd><%= @product.target_url %></dd>
+    <dt>Keywords</dt>
+    <% @product.keywords.split(',').each do |kw| %>
+        <dd><%= kw %></dd>
+    <% end  %>
+    <dt>Session Rate</dt>
+    <dd><%= @product.session_rate %>/24 hours</dd>
+    <dt>Referral URLs</dt>
+    <% @product.referral_urls.each do |ru| %>
+       <% if ru.present? %>
+           <dd><%= link_to "#{ru.url} - #{ru.weight}", ru.url %></dd>
+        <% end %>
+    <% end %>
+
+    <%= link_to "Edit #{@product.name}", [:edit, @product] %>
+    <%= button_to "Delete", @product, method: :delete, data: { confirm: "Sure?" }, class: "btn btn-default" %>
+</dl>

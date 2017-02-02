@@ -1,0 +1,8 @@
+<%= simple_form_for product do |f| %>
+    <%= f.input :name %>
+    <%= f.input :target_url %>
+    <%= f.input :keywords %>
+    <%= f.input :referral_url_list, placeholder: 'http://foo.com,40', as: :text %>
+    <%= f.input :session_rate %>
+    <%= f.button :submit %>
+<% end %>

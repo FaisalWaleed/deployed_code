@@ -1,0 +1,30 @@
+#!/usr/bin/env bash
+
+# Kill the whole script on error
+set -e
+
+# Get the absolute path to the directory containing this script
+this_script_dir=$(cd `dirname ${BASH_SOURCE[0]}` && pwd)
+
+if [[ "$#" -lt 2 ]]
+then
+  echo "Usage: $0 <tag> <command>" >&2
+  exit 1
+fi
+
+tag="$1"
+shift 1
+command="$@"
+task_logfile_dir="$this_script_dir/../log/cron_logs"
+task_exitcode_dir="$this_script_dir/../log/exit_codes"
+task_logfile_name="$task_logfile_dir/$tag.log"
+task_exitcode_name="$task_exitcode_dir/$tag.log"
+
+mkdir -p "$task_logfile_dir"
+mkdir -p "$task_exitcode_dir"
+
+echo "starting $command at `date -u "+%Y.%m.%d-%H.%M.%S"`" >> $task_logfile_name
+
+($command 2>&1) >>$task_logfile_name; echo "Exit code: $?" | tee -a $task_logfile_name > $task_exitcode_name
+
+echo "finished $command at `date -u "+%Y.%m.%d-%H.%M.%S"`" >> $task_logfile_name

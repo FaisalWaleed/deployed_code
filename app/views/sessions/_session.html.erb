@@ -1,0 +1,8 @@
+<div class='list-group-item'>
+    <p><%= session.created_at.to_s(:rfc822) %> to <%= session.updated_at.to_s(:rfc822) %>
+    <p><%= session.browser.try(:name) %> on <%= session.proxy_url.to_s %></p>
+    <p><%= link_to "Searching for #{session.target} with \"#{session.keyword}\"", session.product %></p>
+    <p>Failure Reason: <%= session.failure_reason  %></p>
+    <p>Location: <%= session.location %></p>
+    <p>Ended on page: <%= session.page %></p>
+</div>

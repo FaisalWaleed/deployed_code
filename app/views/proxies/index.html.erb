@@ -1,0 +1,7 @@
+<%= content_tag :div, "There are #{pluralize @proxy_count, 'active proxies'} left", class: "alert #{proxy_class}" %>
+<div class='list-group'>
+<%= render @proxies %>
+</div>
+
+<%= link_to "New Proxy", [:new, :proxy] %>
+<%= button_to "Reset Proxies", [:reset, :proxies], method: :put, data: { confirm: "Sure?" }, class: "btn btn-default" %>

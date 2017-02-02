@@ -1,0 +1,142 @@
+<div class="panel panel-default">
+  <div class="panel-heading">Sessions</div>
+  <div class="panel-body">There have been <strong><%= pluralize @session_count, 'session' %></strong> in the last 24 hours</div>
+</div>
+<div class="panel panel-default">
+    <div class="panel-heading">Completed sessions</div>
+    <div class="panel-body">
+        <p>There have been <strong><%= pluralize @complete_session_count, 'completed session' %></strong> in the last 24 hours</p>
+        <p>Completion rate: <%= @complete_session_count %>/<%= @session_count %> (<%= percentage @complete_session_count, @session_count %>)</p>
+    </div>
+</div>
+<div class="panel panel-default">
+  <div class="panel-heading">Burnt Proxies</div>
+  <div class="panel-body">
+      <p>There have been <strong><%= pluralize @burned_count, 'burnt proxy' %></strong> in the last 24 hours</p>
+      <p>Burn rate: <%= @burned_count %>/<%= @session_count %> (<%= percentage @burned_count, @session_count %>)</p>
+  </div>
+</div>
+<div class="panel panel-default">
+  <div class="panel-heading">Timed Out Sessions</div>
+  <div class="panel-body">
+      <p>There have been <strong><%= pluralize @timed_out_count, 'timed out session' %></strong> in the last 24 hours</p>
+      <p>Time out rate: <%= @timed_out_count %>/<%= @session_count %> (<%= percentage @timed_out_count, @session_count %>)</p>
+  </div>
+</div>
+<div class="panel panel-default">
+  <div class="panel-heading">Page breakdown</div>
+  <div class="panel-body">
+      <div id="chart" style="width:1100px;height:300px"></div>
+      <div>Pages viewed by session</div>
+  </div>
+</div>
+
+<script>
+  var maxX = 0;
+  var maxY = 0;
+  var session = <%= @sessions.to_json.html_safe %>;
+  var dataset = {
+      full: [],
+      network: [],
+      capybara: [],
+      endOfList: [],
+      timeout: [],
+      addToCart: [],
+      burnt: [],
+      none: []
+  }
+  session.reduce(function(acc, curr, i, arr) {
+    setOrAdd(acc.full, curr.page, curr.count)
+    if (maxY < acc.full[curr.page]) {
+      maxY = acc.full[curr.page]
+    }
+    if (maxX < curr.page) {
+      maxX = curr.page
+    }
+    switch(curr.failure_reason) {
+      case "none":
+        setOrAdd(acc.none, curr.page, curr.count)
+        break;
+      case "burnt":
+        setOrAdd(acc.burnt, curr.page, curr.count)
+        break;
+      case "network issue":
+        setOrAdd(acc.network, curr.page, curr.count)
+        break;
+      case "capybara issue":
+        setOrAdd(acc.capybara, curr.page, curr.count)
+        break;
+      case "End of search list":
+        setOrAdd(acc.endOfList, curr.page, curr.count)
+        break;
+      case "timeout":
+        setOrAdd(acc.timeout, curr.page, curr.count)
+        break;
+      default:
+        if (curr.failure_reason != null && curr.failure_reason.startsWith("unable to find add to cart button")) {
+          setOrAdd(acc.addToCart, curr.page, curr.count)
+        }
+    }
+    return acc
+  }, dataset)
+
+  function getDatalist(arr) {
+      return arr.reduce(function(acc, curr, i, arr) {
+        acc.push([i, curr])
+        return acc
+      }, []);
+  }
+
+  function setOrAdd(target, i, count) {
+    if (target[i] === undefined) {
+      target[i] = count
+    } else {
+      target[i] += count
+    }
+  }
+
+  $(function() {
+    $.plot(
+      "#chart",
+      [
+          {data: getDatalist(dataset.full), label: "Total Pages"},
+          {data: getDatalist(dataset.none), label: "Completed"},
+          {data: getDatalist(dataset.burnt), label: "Burnt"},
+          {data: getDatalist(dataset.network), label: "Network Issue"},
+          {data: getDatalist(dataset.capybara), label: "Capybara Issue"},
+          {data: getDatalist(dataset.endOfList), label: "End of Search List"},
+          {data: getDatalist(dataset.addToCart), label: "Unable to Find Button"},
+          {data: getDatalist(dataset.timeout), label: "Timed Out"}
+      ],
+      {
+        yaxis: {min: 0, max: maxY},
+        xaxis: {min: 0, max: maxX},
+        series: {lines: {show: true},
+                 points: {show: true}},
+        grid: {hoverable: true,
+               clickable: true}
+      })
+
+    $("<div id='tooltip'></div>").css({
+      position: "absolute",
+      display: "none",
+      border: "1px solid #fdd",
+      padding: "2px",
+      "background-color": "#fee",
+      opacity: 0.80
+    }).appendTo("body");
+
+    $("#chart").bind("plothover", function (event, pos, item) {
+      if (item) {
+        var x = item.datapoint[0];
+            y = item.datapoint[1];
+
+        $("#tooltip").html(item.series.label + "- Page: " + x + " (" + y + " sessions)")
+                     .css({top: item.pageY+5, left: item.pageX+5})
+                     .fadeIn(200);
+      } else {
+        $("#tooltip").hide();
+      }
+    });
+  });
+</script>

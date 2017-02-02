@@ -1,0 +1,5 @@
+---
+production:
+  host: 23.111.153.238
+  port: 6379
+  password: ab1b5da50a228f85a3b75cce5bafbab8764ba3e744cac6dfd0dc267db160f83f

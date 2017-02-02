@@ -1,0 +1,10 @@
+
+<div class="list-group-item">
+    <div class="pull-left">
+        <span class="text-muted">Name:</span> <%= link_to browser.name, browser %>
+    </div>
+    <div class="pull-right">
+      <span class="text-muted">Burnt proxies:</span> <span class="text-<%= browser.burnt_count == 0 ? "info" : "danger" %>"><%= browser.burnt_count %></span>
+    </div>
+    <div class="clearfix"></div>
+</div>

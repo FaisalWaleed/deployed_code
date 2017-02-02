@@ -1,0 +1,10 @@
+/home/botly/current/log/*.log /home/botly/current/log/cron_logs/*.log /home/botly/current/log/exit_codes/*.log {
+  daily
+  copytruncate
+  noolddir
+  notifempty
+  rotate 7
+  missingok
+  size 10k
+  compress
+}

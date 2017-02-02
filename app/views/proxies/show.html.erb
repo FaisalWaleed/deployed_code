@@ -1,0 +1,16 @@
+<h1><%= @proxy.name %></h1>
+
+<dl class='well'>
+    <dt>Name</dt>
+    <dd><%= @proxy.name %></dd>
+    <dt>Comment</dt>
+    <dd><%= @proxy.comment %></dd>
+    <dt>Provider URL</dt>
+    <dd><%= link_to @proxy.provider_url, @proxy.provider_url %></dd>
+    <dt>Proxies</dt>
+    <% @proxy.proxy_urls.each do |pu| %>
+        <dd><%= pu.ip %>:<%= pu.port %></dd>
+    <% end %>
+
+    <%= link_to "Edit #{@proxy.name}", [:edit, @proxy] %>
+</dl>

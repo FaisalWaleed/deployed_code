@@ -1,0 +1,6 @@
+<%= simple_form_for proxy do |f| %>
+    <%= f.input :name %>
+    <%= f.input :provider_url %>
+    <%= f.input :proxy_url_list, as: :text %>
+    <%= f.button :submit %>
+<% end %>

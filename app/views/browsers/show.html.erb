@@ -1,0 +1,13 @@
+<h1><%= @browser.name %></h1>
+
+<dl class='well'>
+    <dt>Name</dt>
+    <dd><%= @browser.name %></dd>
+    <dt>User Agent</dt>
+    <dd><%= @browser.user_agent %>
+    <dt>Weight</dt>
+    <dd><%= @browser.weight %>%</dd>
+
+    <%= link_to "Edit #{@browser.name}", [:edit, @browser] %>
+    <%= button_to "Delete", @browser, method: :delete, data: { confirm: "Sure?" }, class: "btn btn-default" %>
+</dl>
